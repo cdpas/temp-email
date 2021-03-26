@@ -56,10 +56,22 @@
       </div>
     </v-row>
     <v-row class="frame">
-      <iframe :src="getMail()" frameborder="0"
+      <div v-if="isNew == false">
+        <iframe :src="getMail()" frameborder="0"
         style="width: 99vw; height: 100%;margin-left: auto; margin-right:auto"
         >
         </iframe>
+      </div>
+      <div v-else
+      style="padding-top: 50%; width: 100vw; text-align: center;"
+      >
+        <v-btn 
+        color="green"
+        style="margin-left: auto; margin-right: auto; padding: 20px; color: white"
+        @click="genRandom()"
+        >Generate a Disposable Email</v-btn>
+      </div>
+      
     </v-row>
     <v-snackbar
       v-model="snackbar"
@@ -84,13 +96,18 @@
 .control {
   height: 35vh;
   border: 2px solid black;
-  border-radius: 5px;
+  border-radius: 10px;
+  background-color: white;
 }
 .frame {
  height: 65vh;
-
  border: 2px solid black;
- border-radius: 5px;
+ border-radius: 10px;
+ background: linear-gradient(180deg, rgba(245,255,252,1) 0%, rgba(190,251,255,1) 100%);
+}
+iframe {
+  z-index: 9999;
+  border-radius: 10px;
 }
 .top {
   width: 100vw;
@@ -163,12 +180,14 @@ button {
      savedMails: [],
      selectedMail: '',
      snackbar: false,
-     snackText: ''
+     snackText: '',
+     isNew: true
       
       
     }),
     methods: {
       genRandom() {
+      this.isNew = false;
       var random1 = Math.floor(Math.random() * (2047 - 0) + 0);
       var random2 = Math.floor(Math.random() * (2047 - 0) + 0);
       this.mail = wordList[random1] + wordList[random2] + Math.floor(Math.random() * (99 - 0) + 0);
@@ -176,13 +195,19 @@ button {
       this.snackText = "Random Mail Generated!";
       },
       getMail() {
+        if (this.isNew == false) {
           return "https://maildrop.cc/inbox/" + this.mail;
+        } else {
+          return "";
+        }
+          
       },
       saveMail() {
-       this.savedMails.push(this.mail);
-       localStorage.setItem("tempMailList", JSON.stringify(this.savedMails));
-       this.snackbar = true;
-      this.snackText = "Mail saved!";
+        this.isNew = false;
+        this.savedMails.push(this.mail);
+        localStorage.setItem("tempMailList", JSON.stringify(this.savedMails));
+        this.snackbar = true;
+        this.snackText = "Mail saved!";
       },
       clipCopy() {
         let value = document.querySelector('#copy-mail');
@@ -197,6 +222,7 @@ button {
         if (localStorage.getItem("tempMailList")) {
          this.savedMails = JSON.parse(localStorage.getItem("tempMailList")); 
          this.selectedMail = this.savedMails[0];
+         this.isNew = false;
         } else {
           this.savedMails = new Array(0);
           console.log(typeof(this.savedMails));
@@ -216,17 +242,23 @@ button {
           this.selectedMail = this.mail;
         }
         var index = this.savedMails.indexOf(this.selectedMail);
-        if (index > -1) {
+      
           this.savedMails.splice(index, 1);
-        }
+        
         localStorage.setItem("tempMailList", JSON.stringify(this.savedMails));
         this.snackbar = true;
+        
         this.snackText = "Mail deleted!";
+        console.log(this.selectedMail.length)
+        console.log(this.selectedMail);
+      },
+      firstLoad(){
+        this.isNew = true;
       }
     },
     mounted() {
       this.checkTemp();
-      this.savedMails.length > 0 ? this.mail = this.savedMails[0] : this.genRandom();
+      this.savedMails.length > 0 ? this.mail = this.savedMails[0] : this.firstLoad();
     }
   }
 </script>

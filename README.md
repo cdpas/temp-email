@@ -1,24 +1,25 @@
-# temp-email
+# Disposable Email Client for Android
+
+This is a Vue-Cordova android app that allows to generate disposable mail accounts on maildrop. 
+
+The content of the disposable email account is visible in an iframe and the generated emails can be saved so that these can be accessed anytime.
+
+The emails are generated randomly using a list file.
 
 ## Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Run the project in Vue
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Run on Android
 ```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+npm run cordova-prepare 
+cd src-cordova
+cordova run android
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

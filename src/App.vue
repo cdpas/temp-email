@@ -7,7 +7,11 @@
     </v-main>
   </v-app>
 </template>
-
+<style scoped>
+.v-main {
+  background-color: black;
+}
+</style>
 <script>
 import Home from './components/home';
 
